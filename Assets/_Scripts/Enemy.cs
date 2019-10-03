@@ -10,6 +10,9 @@ public class Enemy : MonoBehaviour
     public float health = 10;
     public int score = 100;
 
+
+    private BoundsCheck bndCheck;
+
     //This is a property: A method that acts like a field
     public Vector3 pos
     {
@@ -24,15 +27,24 @@ public class Enemy : MonoBehaviour
     }
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
-        
+        bndCheck = GetComponent<BoundsCheck>();
     }
 
     // Update is called once per frame
     void Update()
     {
         Move();
+        if(bndCheck != null && !bndCheck.isOnScreen)
+        {
+            //Check to make sure it's gone off the bottom of the screen
+            if(pos.y < bndCheck.camHeight - bndCheck.radius)
+            {
+                //We're off the bottom, to destroy this GameObject
+                Destroy(gameObject);
+            }
+        }
     }
     public virtual void Move()
     {
