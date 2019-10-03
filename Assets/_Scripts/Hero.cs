@@ -11,9 +11,11 @@ public class Hero : MonoBehaviour
     public float speed = 30;
     public float rollMult = -45;
     public float pitchMult = 30;
+    public float gameRestartDelay = 2f;
 
     [Header("Set Dynamically")]
-    public float shieldLevel = 1;
+    [SerializeField]
+    public float _shieldLevel = 1;
 
     //This variable holds a reference to the last triggering GameObject
     private GameObject  lastTriggerGo = null;
@@ -68,6 +70,25 @@ public class Hero : MonoBehaviour
         else
         {
             print("Triggered by non-Enemy: " + go.name);
+        }
+    }
+
+    public float shieldLevel
+    {
+        get
+        {
+            return (_shieldLevel);
+        }
+        set
+        {
+            _shieldLevel = Mathf.Min(value, 4);
+            //if the shield is going to be set to less than two
+            if(value < 0)
+            {
+                Destroy(this.gameObject);
+                //Tell Main.S to restart the game after a delay
+                Main.S.DelayedRestart(gameRestartDelay);
+            }
         }
     }
 }
